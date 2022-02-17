@@ -14,7 +14,8 @@ const getProductsFromFile = callback => {
 }
 
 module.exports = class Product {
-  constructor(title, imageUrl, description, price) {
+  constructor(id, title, imageUrl, description, price) {
+    this.id = id;
     this.title = title;
     this.imageUrl = imageUrl;
     this.description = description;
@@ -22,14 +23,25 @@ module.exports = class Product {
   }
 
   save() {
-    this.id = Math.random().toString();
     getProductsFromFile(products => {
-      products.push(this);
-      fs.writeFile(filePath, JSON.stringify(products), err => {
-        if (err) {
-          console.log(err);
-        }
-      });
+      if (this.id) {
+        const existingProductIndex = products.findIndex(product => product.id === this.id);
+        const updatedProducts = [...products];
+        updatedProducts[existingProductIndex] = this;
+        this.writeProductsToFile(updatedProducts);
+      } else {
+        this.id = Math.random().toString();
+        products.push(this);
+        this.writeProductsToFile(products);
+      }
+    });
+  }
+
+  writeProductsToFile(products) {
+    fs.writeFile(filePath, JSON.stringify(products), err => {
+      if (err) {
+        console.log(err);
+      }
     });
   }
 
