@@ -42,7 +42,7 @@ module.exports = class Cart {
       if (productToDelete) {
         const productQuantity = productToDelete.quantity;
         updatedCart.products = updatedCart.products.filter(product => product.id !== id);
-        updatedCart.totalPrice = cart.totalPrice - productPrice * productQuantity;
+        updatedCart.totalPrice = updatedCart.totalPrice - productPrice * productQuantity;
 
         fs.writeFile(filePath, JSON.stringify(updatedCart), error => {
           console.log(error);
