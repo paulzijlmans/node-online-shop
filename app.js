@@ -6,11 +6,20 @@ const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
 const errorController = require('./controllers/error');
+const database = require('./util/database');
 
 const app = express();
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
+
+database.execute('SELECT * FROM products')
+  .then(result => {
+    console.log("result", result);
+  })
+  .catch(err => {
+    console.log("err", err);
+  });
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
