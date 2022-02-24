@@ -2,13 +2,15 @@ const Product = require('../models/product');
 const Cart = require('../models/cart');
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll(products => {
-    res.render('shop/product-list', {
-      prods: products,
-      pageTitle: 'All Products',
-      path: '/products'
-    });
-  });
+  Product.fetchAll()
+    .then(([rows]) => {
+      res.render('shop/product-list', {
+        prods: rows,
+        pageTitle: 'All Products',
+        path: '/products'
+      });
+    })
+    .catch(err => console.log(err));
 };
 
 exports.getProduct = (req, res, next) => {
@@ -23,31 +25,35 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getIndex = (req, res, next) => {
-  Product.fetchAll(products => {
-    res.render('shop/product-list', {
-      prods: products,
-      pageTitle: 'Shop',
-      path: '/'
-    });
-  });
+  Product.fetchAll()
+    .then(([rows]) => {
+      res.render('shop/product-list', {
+        prods: rows,
+        pageTitle: 'Shop',
+        path: '/'
+      });
+    })
+    .catch(err => console.log(err));
 };
 
 exports.getCart = (req, res, next) => {
   Cart.getCart(cart => {
-    Product.fetchAll(products => {
-      const cartProducts = [];
-      for (const product of products) {
-        const cartProductData = cart.products.find(prod => prod.id === product.id);
-        if (cartProductData) {
-          cartProducts.push({ productData: product, quantity: cartProductData.quantity });
+    Product.fetchAll()
+      .then(([rows]) => {
+        const cartProducts = [];
+        for (const product of rows) {
+          const cartProductData = cart.products.find(prod => prod.id === product.id);
+          if (cartProductData) {
+            cartProducts.push({ productData: product, quantity: cartProductData.quantity });
+          }
         }
-      }
-      res.render('shop/cart', {
-        pageTitle: 'Your Cart',
-        path: '/cart',
-        products: cartProducts
-      });
-    });
+        res.render('shop/cart', {
+          pageTitle: 'Your Cart',
+          path: '/cart',
+          products: cartProducts
+        });
+      })
+      .catch(err => console.log(err));
   });
 };
 
