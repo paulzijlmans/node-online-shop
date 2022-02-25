@@ -20,7 +20,15 @@ form {
 }
 
 .centered {
- text-align: center; 
+  text-align: center;
+}
+
+.image {
+  height: 20rem;
+}
+
+.image img {
+  height: 100%;
 }
 
 .main-header {
