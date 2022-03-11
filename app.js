@@ -25,11 +25,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
   User.findByPk(1)
-  .then(user => {
-    req.user = user;
-    next();
-  })
-  .catch(err => console.log(err));;
+    .then(user => {
+      req.user = user;
+      next();
+    })
+    .catch(err => console.log(err));;
 });
 
 app.use('/admin', adminRoutes);
@@ -48,8 +48,8 @@ Cart.belongsToMany(Product, { through: CartItem });
 Product.belongsToMany(Cart, { through: CartItem });
 
 sequelize
-  .sync({force: true})
-  // .sync()
+  // .sync({force: true})
+  .sync()
   .then(() => {
     return User.findByPk(1);
   })
@@ -62,5 +62,6 @@ sequelize
     }
     return user;
   })
+  .then(user => user.createCart())
   .then(() => app.listen(3000))
   .catch(err => console.log(err));

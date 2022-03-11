@@ -39,24 +39,17 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
-  Cart.getCart(cart => {
-    Product.fetchAll()
-      .then(([rows]) => {
-        const cartProducts = [];
-        for (const product of rows) {
-          const cartProductData = cart.products.find(prod => prod.id === product.id);
-          if (cartProductData) {
-            cartProducts.push({ productData: product, quantity: cartProductData.quantity });
-          }
-        }
+  req.user.getCart()
+    .then(cart => cart.getProducts()
+      .then(products => {
         res.render('shop/cart', {
           pageTitle: 'Your Cart',
           path: '/cart',
-          products: cartProducts
+          products: products
         });
       })
-      .catch(err => console.log(err));
-  });
+      .catch(err => console.log(err)))
+    .catch(err => console.log(err));
 };
 
 exports.postCart = (req, res, next) => {
