@@ -4,19 +4,25 @@ services:
   database:
     image: mysql:8.0.12
     restart: always
-    environment:
-      MYSQL_DATABASE: node-online-shop
-      MYSQL_ROOT_PASSWORD: password
+    env_file:
+      - ./.env
     ports:
       - '3306:3306'
     volumes:
       - 'dbdata:/var/lib/mysql'
       # - './database:/docker-entrypoint-initdb.d'
+  
+  mongodb:
+    image: mongo:5.0
+    restart: always
+    env_file:
+      - ./.env
 
   shop:
     build: ./
     depends_on:
       - database
+      - mongodb
     command: npm start
     working_dir: /app
     ports:
