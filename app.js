@@ -2,9 +2,10 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const { MONGO_INITDB_ROOT_USERNAME, MONGO_INITDB_ROOT_PASSWORD, MONGO_INITDB_DATABASE } = process.env;
 
 const errorController = require('./controllers/error');
-const mongoConnect = require('./util/database').mongoConnect;
 const User = require('./models/User');
 
 const app = express();
@@ -32,14 +33,6 @@ app.use(shopRoutes);
 
 app.use(errorController.getPageNotFound);
 
-mongoConnect()
-  .then(() => User.find())
-  .then(user => {
-    if (!user) {
-      const newUser = new User('Paul', 'paul@test.com');
-      return newUser.save()
-    }
-    return user;
-  })
+mongoose.connect(`mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongodb/${MONGO_INITDB_DATABASE}?authSource=admin`)
   .then(() => app.listen(3000))
   .catch(err => console.log(err));
