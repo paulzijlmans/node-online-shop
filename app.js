@@ -35,5 +35,8 @@ app.use(shopRoutes);
 app.use(errorController.getPageNotFound);
 
 mongoose.connect(`mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongodb/${MONGO_INITDB_DATABASE}?authSource=admin`)
-  .then(() => app.listen(3000))
+  .then(() => {
+    console.log('Listening on Port 3000');
+    app.listen(3000);
+  })
   .catch(err => console.log(err));
