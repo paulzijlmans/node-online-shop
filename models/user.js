@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const product = require('./product');
 
 const Schema = mongoose.Schema;
 
@@ -16,7 +15,7 @@ const userSchema = new Schema({
     items: [{
       productId: {
         type: Schema.Types.ObjectId,
-        ref: product,
+        ref: 'Product',
         required: true
       },
       quantity: {
@@ -54,6 +53,5 @@ userSchema.methods.deleteFromCart = function (productId) {
     .filter(item => item.productId.toString() !== productId.toString());
   return this.save();
 }
-
 
 module.exports = mongoose.model('User', userSchema);
