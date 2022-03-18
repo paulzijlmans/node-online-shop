@@ -9,6 +9,7 @@ const database = require('./util/database');
 const User = require('./models/User');
 
 const app = express();
+const store = database.getStore(session);
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -22,7 +23,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({ 
   secret: 'my secret', 
   resave: false, 
-  saveUninitialized: false }));
+  saveUninitialized: false,
+  store: store
+ }));
 
 app.use((req, res, next) => {
   User.findOne()
