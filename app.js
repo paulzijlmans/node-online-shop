@@ -46,20 +46,6 @@ app.use(authRoutes);
 app.use(errorController.getPageNotFound);
 
 database.connect()
-  .then(() => User.findOne())
-  .then(user => {
-    if (!user) {
-      const newUser = new User({
-        name: 'Paul',
-        email: 'paul@test.com',
-        cart: {
-          items: []
-        }
-      });
-      return newUser.save();
-    }
-    return user;
-  })
   .then(() => {
     console.log('Listening on Port 3000');
     app.listen(3000);
