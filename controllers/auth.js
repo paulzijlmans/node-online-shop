@@ -28,11 +28,6 @@ exports.getSignup = (req, res, next) => {
   });
 };
 
-const getErrorMessage = (req) => {
-  const message = req.flash('error');
-  return message.length > 0 ? message[0] : null;
-}
-
 exports.postLogin = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -103,4 +98,17 @@ exports.postLogout = (req, res, next) => {
     console.log(err);
     res.redirect('/');
   });
+};
+
+exports.getReset = (req, res, next) => {
+  res.render('auth/reset', {
+    path: '/reset',
+    pageTitle: 'Reset Password',
+    errorMessage: getErrorMessage(req)
+  });
+}
+
+const getErrorMessage = (req) => {
+  const message = req.flash('error');
+  return message.length > 0 ? message[0] : null;
 }
