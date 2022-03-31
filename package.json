@@ -23,6 +23,7 @@
     "express": "^4.17.2",
     "express-handlebars": "^6.0.2",
     "express-session": "^1.17.2",
+    "express-validator": "^6.14.0",
     "mongoose": "^6.2.7",
     "nodemailer": "^6.7.3",
     "nodemailer-sendgrid-transport": "^0.2.0",
