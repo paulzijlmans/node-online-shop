@@ -2,7 +2,7 @@ const { validationResult } = require('express-validator');
 
 const Product = require('../models/product');
 
-exports.getAddProduct = (req, res) => {
+exports.getAddProduct = (_req, res) => {
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
@@ -23,7 +23,7 @@ exports.postAddProduct = (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(422).render('admin/edit-product', {
       pageTitle: 'Add Product',
-      path: '/admin/edit-product',
+      path: '/admin/add-product',
       editing: false,
       hasError: true,
       product: {
@@ -107,7 +107,7 @@ exports.postEditProduct = (req, res) => {
       return product.save()
         .then(() => res.redirect('/admin/products'))
     })
-    .catch(err => console.log(err));
+    .catch(() => res.redirect('/internal-server-error'));
 }
 
 exports.getProducts = (req, res) => {
@@ -122,7 +122,7 @@ exports.getProducts = (req, res) => {
     .catch(err => console.log(err));
 }
 
-exports.postDeleteProduct = (req, res, next) => {
+exports.postDeleteProduct = (req, res, _next) => {
   const productId = req.body.productId;
   Product.deleteOne({ _id: productId, userId: req.user._id })
     .then(() => res.redirect('/admin/products'))

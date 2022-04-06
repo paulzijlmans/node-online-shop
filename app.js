@@ -32,7 +32,7 @@ app.use(session({
 app.use(csrfProtection);
 app.use(flash());
 
-app.use((req, res, next) => {
+app.use((req, _res, next) => {
   if (!req.session.user) {
     return next();
   }
@@ -58,6 +58,8 @@ app.use((req, res, next) => {
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
+
+app.get('/internal-server-error', errorController.getInternalServerError);
 
 app.use(errorController.getPageNotFound);
 
