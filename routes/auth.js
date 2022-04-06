@@ -30,7 +30,7 @@ router.post('/signup',
     check('email')
       .isEmail()
       .withMessage('Please enter a valid email.')
-      .custom((value, { req }) => {
+      .custom((value) => {
         return User.findOne({ email: value })
           .then(userDoc => {
             if (userDoc) {

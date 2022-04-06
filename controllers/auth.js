@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport(sendgridTransport({
   }
 }));
 
-exports.getLogin = (req, res, next) => {
+exports.getLogin = (req, res, _next) => {
   return res.render('auth/login', {
     path: '/login',
     pageTitle: 'Login',
@@ -24,7 +24,7 @@ exports.getLogin = (req, res, next) => {
   });
 }
 
-exports.getSignup = (req, res, next) => {
+exports.getSignup = (req, res, _next) => {
   res.render('auth/signup', {
     path: '/signup',
     pageTitle: 'Signup',
@@ -34,7 +34,7 @@ exports.getSignup = (req, res, next) => {
   });
 };
 
-exports.postLogin = (req, res, next) => {
+exports.postLogin = (req, res, _next) => {
   const email = req.body.email;
   const password = req.body.password;
 
@@ -90,7 +90,7 @@ exports.postLogin = (req, res, next) => {
     .catch(err => console.log(err));
 }
 
-exports.postSignup = (req, res, next) => {
+exports.postSignup = (req, res, _next) => {
   const email = req.body.email;
   const password = req.body.password;
   const errors = validationResult(req);
@@ -127,14 +127,14 @@ exports.postSignup = (req, res, next) => {
     .catch(err => console.log(err));
 };
 
-exports.postLogout = (req, res, next) => {
+exports.postLogout = (req, res, _next) => {
   req.session.destroy(err => {
     console.log(err);
     res.redirect('/');
   });
 };
 
-exports.getReset = (req, res, next) => {
+exports.getReset = (req, res, _next) => {
   res.render('auth/reset', {
     path: '/reset',
     pageTitle: 'Reset Password',
@@ -142,7 +142,7 @@ exports.getReset = (req, res, next) => {
   });
 }
 
-exports.postReset = (req, res, next) => {
+exports.postReset = (req, res, _next) => {
   crypto.randomBytes(32, (error, buffer) => {
     if (error) {
       console.log(error);
@@ -176,7 +176,7 @@ exports.postReset = (req, res, next) => {
   })
 };
 
-exports.getNewPassword = (req, res, next) => {
+exports.getNewPassword = (req, res, _next) => {
   const token = req.params.token;
   User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } })
     .then(user => {
@@ -191,7 +191,7 @@ exports.getNewPassword = (req, res, next) => {
     .catch(err => console.log(err));
 }
 
-exports.postNewPassword = (req, res, next) => {
+exports.postNewPassword = (req, res, _next) => {
   const newPassword = req.body.password;
   const userId = req.body.userId;
   const passwordToken = req.body.passwordToken;
