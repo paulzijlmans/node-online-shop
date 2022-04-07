@@ -1,4 +1,4 @@
-export function handleError(err, next) {
+exports.handleError = (err, next) => {
   const error = new Error(err);
   error.httpStatusCode = 500;
   return next(error);

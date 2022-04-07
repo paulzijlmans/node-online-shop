@@ -3,7 +3,7 @@ const { validationResult } = require('express-validator');
 const Product = require('../models/product');
 const handleError = require('../util/error-handler');
 
-exports.getAddProduct = (_req, res) => {
+exports.getAddProduct = (_req, res, _next) => {
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
@@ -40,6 +40,9 @@ exports.postAddProduct = (req, res, next) => {
   const product = new Product({ title, price, description, imageUrl, userId: req.user });
   product
     .save()
+    .then(() => {
+      throw new Error('OOps!')
+    })
     .then(() => res.redirect('/admin/products'))
     .catch(err => handleError(err, next));
 }

@@ -32,6 +32,12 @@ app.use(session({
 app.use(csrfProtection);
 app.use(flash());
 
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
+
 app.use((req, _res, next) => {
   if (!req.session.user) {
     return next();
@@ -45,14 +51,8 @@ app.use((req, _res, next) => {
       next();
     })
     .catch(err => {
-      throw new Error(err)
+      next(new Error(err))
     });
-});
-
-app.use((req, res, next) => {
-  res.locals.isAuthenticated = req.session.isLoggedIn;
-  res.locals.csrfToken = req.csrfToken();
-  next();
 });
 
 app.use('/admin', adminRoutes);
@@ -64,7 +64,10 @@ app.get('/internal-server-error', errorController.getInternalServerError);
 app.use(errorController.getPageNotFound);
 
 app.use((_error, _req, res, _next) => {
-  res.redirect('/internal-server-error');
+  res.status(500).render('internal-server-error', {
+    pageTitle: 'Error!',
+    path: '/internal-server-error',
+  });
 });
 
 database.connect()

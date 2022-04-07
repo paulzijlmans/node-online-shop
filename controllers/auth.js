@@ -15,26 +15,24 @@ const transporter = nodemailer.createTransport(sendgridTransport({
   }
 }));
 
-exports.getLogin = (req, res, next) => {
+exports.getLogin = (req, res, _next) => {
   return res.render('auth/login', {
     path: '/login',
     pageTitle: 'Login',
     errorMessage: getErrorMessage(req),
     oldInput: { email: '', password: '' },
     validationErrors: []
-  })
-    .catch(err => handleError(err, next));
+  });
 }
 
-exports.getSignup = (req, res, next) => {
+exports.getSignup = (req, res, _next) => {
   res.render('auth/signup', {
     path: '/signup',
     pageTitle: 'Signup',
     errorMessage: getErrorMessage(req),
     oldInput: { email: '', password: '', confirmPassword: '' },
     validationErrors: []
-  })
-    .catch(err => handleError(err, next));
+  });
 };
 
 exports.postLogin = (req, res, next) => {
@@ -85,10 +83,7 @@ exports.postLogin = (req, res, next) => {
               validationErrors: []
             });
         })
-        .catch(err => {
-          console.log(err);
-          res.redirect('/login');
-        });
+        .catch(() => res.redirect('/login'));
     })
     .catch(err => handleError(err, next));
 }
@@ -129,19 +124,17 @@ exports.postSignup = (req, res, next) => {
     .catch(err => handleError(err, next));
 };
 
-exports.postLogout = (req, res, next) => {
+exports.postLogout = (req, res, _next) => {
   req.session
-    .destroy(() => res.redirect('/'))
-    .catch(err => handleError(err, next));
+    .destroy(() => res.redirect('/'));
 };
 
-exports.getReset = (req, res, next) => {
+exports.getReset = (req, res, _next) => {
   res.render('auth/reset', {
     path: '/reset',
     pageTitle: 'Reset Password',
     errorMessage: getErrorMessage(req)
-  })
-    .catch(err => handleError(err, next));
+  });
 }
 
 exports.postReset = (req, res, next) => {
