@@ -5,6 +5,7 @@ const sendgridTransport = require('nodemailer-sendgrid-transport');
 const { validationResult } = require('express-validator');
 
 const User = require('../models/User');
+const handleError = require('../util/error-handler');
 
 require('dotenv').config();
 const { SENDGRIP_API_KEY, SENDGRID_FROM } = process.env;
@@ -14,27 +15,29 @@ const transporter = nodemailer.createTransport(sendgridTransport({
   }
 }));
 
-exports.getLogin = (req, res, _next) => {
+exports.getLogin = (req, res, next) => {
   return res.render('auth/login', {
     path: '/login',
     pageTitle: 'Login',
     errorMessage: getErrorMessage(req),
     oldInput: { email: '', password: '' },
     validationErrors: []
-  });
+  })
+    .catch(err => handleError(err, next));
 }
 
-exports.getSignup = (req, res, _next) => {
+exports.getSignup = (req, res, next) => {
   res.render('auth/signup', {
     path: '/signup',
     pageTitle: 'Signup',
     errorMessage: getErrorMessage(req),
     oldInput: { email: '', password: '', confirmPassword: '' },
     validationErrors: []
-  });
+  })
+    .catch(err => handleError(err, next));
 };
 
-exports.postLogin = (req, res, _next) => {
+exports.postLogin = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
 
@@ -87,10 +90,10 @@ exports.postLogin = (req, res, _next) => {
           res.redirect('/login');
         });
     })
-    .catch(err => console.log(err));
+    .catch(err => handleError(err, next));
 }
 
-exports.postSignup = (req, res, _next) => {
+exports.postSignup = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const errors = validationResult(req);
@@ -104,7 +107,6 @@ exports.postSignup = (req, res, _next) => {
         validationErrors: errors.array()
       });
   }
-
   bcrypt
     .hash(password, 12)
     .then(hashedPassword => {
@@ -124,25 +126,25 @@ exports.postSignup = (req, res, _next) => {
         html: '<h1>You succesfully signed up!</h1>'
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => handleError(err, next));
 };
 
-exports.postLogout = (req, res, _next) => {
-  req.session.destroy(err => {
-    console.log(err);
-    res.redirect('/');
-  });
+exports.postLogout = (req, res, next) => {
+  req.session
+    .destroy(() => res.redirect('/'))
+    .catch(err => handleError(err, next));
 };
 
-exports.getReset = (req, res, _next) => {
+exports.getReset = (req, res, next) => {
   res.render('auth/reset', {
     path: '/reset',
     pageTitle: 'Reset Password',
     errorMessage: getErrorMessage(req)
-  });
+  })
+    .catch(err => handleError(err, next));
 }
 
-exports.postReset = (req, res, _next) => {
+exports.postReset = (req, res, next) => {
   crypto.randomBytes(32, (error, buffer) => {
     if (error) {
       console.log(error);
@@ -172,11 +174,11 @@ exports.postReset = (req, res, _next) => {
         `
         });
       })
-      .catch(err => console.log(err));
+      .catch(err => handleError(err, next));
   })
 };
 
-exports.getNewPassword = (req, res, _next) => {
+exports.getNewPassword = (req, res, next) => {
   const token = req.params.token;
   User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } })
     .then(user => {
@@ -188,10 +190,10 @@ exports.getNewPassword = (req, res, _next) => {
         passwordToken: token
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => handleError(err, next));
 }
 
-exports.postNewPassword = (req, res, _next) => {
+exports.postNewPassword = (req, res, next) => {
   const newPassword = req.body.password;
   const userId = req.body.userId;
   const passwordToken = req.body.passwordToken;
@@ -213,7 +215,7 @@ exports.postNewPassword = (req, res, _next) => {
       return resetUser.save();
     })
     .then(() => res.redirect('/login'))
-    .catch(err => console.log(err));
+    .catch(err => handleError(err, next));
 }
 
 const getErrorMessage = (req) => {

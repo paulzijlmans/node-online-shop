@@ -1,6 +1,7 @@
 const { validationResult } = require('express-validator');
 
 const Product = require('../models/product');
+const handleError = require('../util/error-handler');
 
 exports.getAddProduct = (_req, res) => {
   res.render('admin/edit-product', {
@@ -126,10 +127,4 @@ exports.postDeleteProduct = (req, res, next) => {
   Product.deleteOne({ _id: productId, userId: req.user._id })
     .then(() => res.redirect('/admin/products'))
     .catch(err => handleError(err, next));
-}
-
-const handleError = (err, next) => {
-  const error = new Error(err);
-  error.httpStatusCode = 500;
-  return next(error);
 }
