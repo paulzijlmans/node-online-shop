@@ -63,6 +63,10 @@ app.get('/internal-server-error', errorController.getInternalServerError);
 
 app.use(errorController.getPageNotFound);
 
+app.use((_error, _req, res, _next) => {
+  res.redirect('/internal-server-error');
+});
+
 database.connect()
   .then(() => {
     console.log('Listening on Port 3000');

@@ -13,7 +13,7 @@ exports.getAddProduct = (_req, res) => {
   });
 };
 
-exports.postAddProduct = (req, res) => {
+exports.postAddProduct = (req, res, next) => {
   const title = req.body.title;
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
@@ -36,15 +36,14 @@ exports.postAddProduct = (req, res) => {
       validationErrors: errors.array()
     });
   }
-
   const product = new Product({ title, price, description, imageUrl, userId: req.user });
   product
     .save()
     .then(() => res.redirect('/admin/products'))
-    .catch(err => console.log(err));
+    .catch(err => handleError(err, next));
 }
 
-exports.getEditProduct = (req, res) => {
+exports.getEditProduct = (req, res, next) => {
   const editMode = req.query.edit;
   if (!editMode) {
     return res.redirect('/');
@@ -65,10 +64,10 @@ exports.getEditProduct = (req, res) => {
         validationErrors: []
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => handleError(err, next));
 };
 
-exports.postEditProduct = (req, res) => {
+exports.postEditProduct = (req, res, next) => {
   const productId = req.body.productId;
   const updatedTitle = req.body.title;
   const updatedPrice = req.body.price;
@@ -107,7 +106,7 @@ exports.postEditProduct = (req, res) => {
       return product.save()
         .then(() => res.redirect('/admin/products'))
     })
-    .catch(() => res.redirect('/internal-server-error'));
+    .catch(err => handleError(err, next));
 }
 
 exports.getProducts = (req, res) => {
@@ -119,12 +118,18 @@ exports.getProducts = (req, res) => {
         path: '/admin/products',
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => handleError(err, next));
 }
 
-exports.postDeleteProduct = (req, res, _next) => {
+exports.postDeleteProduct = (req, res, next) => {
   const productId = req.body.productId;
   Product.deleteOne({ _id: productId, userId: req.user._id })
     .then(() => res.redirect('/admin/products'))
-    .catch(err => console.log(err));
+    .catch(err => handleError(err, next));
+}
+
+const handleError = (err, next) => {
+  const error = new Error(err);
+  error.httpStatusCode = 500;
+  return next(error);
 }
