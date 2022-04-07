@@ -1,6 +1,6 @@
 const Product = require('../models/product');
 const Order = require('../models/order');
-const handleError = require('../util/error-handler');
+const { handleError } = require('../util/error-handler');
 
 exports.getProducts = (_req, res, next) => {
   Product.find()

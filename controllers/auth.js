@@ -5,7 +5,7 @@ const sendgridTransport = require('nodemailer-sendgrid-transport');
 const { validationResult } = require('express-validator');
 
 const User = require('../models/User');
-const handleError = require('../util/error-handler');
+const { handleError } = require('../util/error-handler');
 
 require('dotenv').config();
 const { SENDGRIP_API_KEY, SENDGRID_FROM } = process.env;
