@@ -17,7 +17,7 @@ const csrfProtection = csrf();
 
 const fileStorage = multer.diskStorage({
   destination: (_req, _file, cb) => {
-    cb(null, 'images')
+    cb(null, 'images');
   },
   filename: (_req, file, cb) => {
     cb(null, new Date().toISOString() + '-' + file.originalname);
@@ -83,9 +83,11 @@ app.get('/internal-server-error', errorController.getInternalServerError);
 app.use(errorController.getPageNotFound);
 
 app.use((_error, _req, res, _next) => {
+  console.log(_error);
   res.status(500).render('internal-server-error', {
     pageTitle: 'Error!',
     path: '/internal-server-error',
+    isAuthenticated: res.locals.isAuthenticated
   });
 });
 
