@@ -15,6 +15,9 @@ const app = express();
 const store = database.getStore(session);
 const csrfProtection = csrf();
 
+require('dotenv').config();
+const { PORT } = process.env;
+
 const fileStorage = multer.diskStorage({
   destination: (_req, _file, cb) => {
     cb(null, 'images');
@@ -95,6 +98,6 @@ app.use((_error, _req, res, _next) => {
 database.connect()
   .then(() => {
     console.log('Listening on Port 3000');
-    app.listen(3000);
+    app.listen(PORT || 3000);
   })
   .catch(err => console.log(err));

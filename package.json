@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon -L --delay 5 app.js"
+    "start": "node app.js",
+    "start:dev": "nodemon -L --delay 5 app.js"
   },
   "author": "Paul Zijlmans",
   "license": "ISC",
