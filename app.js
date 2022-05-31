@@ -13,7 +13,7 @@ const morgan = require('morgan');
 
 const errorController = require('./controllers/error');
 const database = require('./util/database');
-const User = require('./models/User');
+const User = require('./models/user');
 
 const app = express();
 const store = database.getStore(session);
