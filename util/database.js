@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 const MongoDBStore = require('connect-mongodb-session');
 
 require('dotenv').config();
-const { MONGO_INITDB_ROOT_USERNAME, MONGO_INITDB_ROOT_PASSWORD, MONGO_INITDB_DATABASE } = process.env;
-const MONGODB_URI = `mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongodb/${MONGO_INITDB_DATABASE}?authSource=admin`
+const { MONGODB_USERNAME, MONGODB_PASSWORD, MONGODB_DATABASE, MONGODB_CLUSTERNAME } = process.env;
+const MONGODB_URI = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_CLUSTERNAME}.mongodb.net/${MONGODB_DATABASE}?retryWrites=true&w=majority`
 
 exports.connect = () => mongoose.connect(MONGODB_URI);
 
